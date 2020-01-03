@@ -16,6 +16,9 @@ type SMSService interface {
 	SendSMS(ctx context.Context, phoneNumber string, smsContent string) error
 }
 
+var AccountSid = "AC4de4a4b0f1d142ef55b7bafb634d57aa"
+var AuthToken = "9552111f312b99d831b995624887e298"
+
 func NewTwilloSMSService() *twilioSMSService {
 	return &twilioSMSService{}
 }
@@ -23,10 +26,8 @@ func NewTwilloSMSService() *twilioSMSService {
 func (*twilioSMSService) SendSMS(ctx context.Context, phoneNumber string, smsContent string) error {
 
 	// Set account keys & information
-	accountSid := "ACXXXX"
-	authToken := "XXXXXX"
-	sentPhoneNumber := "NUMBER_FROM"
-	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", accountSid)
+	sentPhoneNumber := "0931317941" // mine phone number :)
+	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", AccountSid)
 
 	// Init api twilio
 	msgData := url.Values{}
@@ -36,7 +37,7 @@ func (*twilioSMSService) SendSMS(ctx context.Context, phoneNumber string, smsCon
 	msgDataReader := *strings.NewReader(msgData.Encode())
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
-	req.SetBasicAuth(accountSid, authToken)
+	req.SetBasicAuth(AccountSid, AuthToken)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	resp, _ := client.Do(req)

@@ -66,7 +66,7 @@ func (repo *userRepo) SignUp(ctx context.Context, phoneNumber string) (string, e
 	return "", errors.New(fmt.Sprintf("The OTP has already sent to phone number %s, you can request new OTP after 30s!", phoneNumber))
 }
 
-func (repo *userRepo) initOTP(phoneNumber string) error {
+func (repo *userRepo) initOTP(ctx context.Context, phoneNumber string) error {
 	otp, err := common.GetRandNumberToString()
 	if err != nil {
 		return err
@@ -79,6 +79,7 @@ func (repo *userRepo) initOTP(phoneNumber string) error {
 	if err != nil {
 		return err
 	}
+	go repo.smsService.SendSMS(ctx, phoneNumber, fmt.Sprintf("Hello, your OTP for phone number %s is %s", phoneNumber, otp))
 	return nil
 }
 

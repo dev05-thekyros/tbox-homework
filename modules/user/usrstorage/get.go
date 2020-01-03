@@ -24,3 +24,20 @@ func (storage *userMongoStorage) GetUserByPhoneNumber(ctx context.Context, phone
 	}
 	return &rs, nil
 }
+
+func (storage *userMongoStorage) GetUserByAccessToken(ctx context.Context, accessToken string) (*usrmodel.User, error) {
+
+	var rs = usrmodel.User{}
+	filter := bson.M{"access_token": accessToken}
+	collection := storage.db.Database("tbox-otp").Collection(rs.CollectionName())
+	mongoCtx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	err := collection.FindOne(mongoCtx, filter).Decode(&rs)
+	if err != nil {
+		if err.Error() == common.MgoNotFound {
+			// not found
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &rs, nil
+}
