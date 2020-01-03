@@ -28,22 +28,51 @@ The good source code should provide
 + Unit test to test all API
 + Document explain about how to run the code, and how to run the unit test
 
-## Assumptions
-We assume that you could send SMS to any phone number by calling this API
+## Project Architect
+Using Domain-driven design 
+[Domain-driven design ](https://github.com/vektra/mockery) with 5 layers:
++ **Transport**: place appy input and out return can use for GRPC or Restful (gin)
++ **Handler**: Place call 1 or many repository for solve require from transport layer.
++ **Transport**: All business is centralize in this layer. All unit test should apply here.
++ **Storage**: only solve problem CRUD. Don't have any logic here. Help solve problem replace another DB with mininum change source code
++ **Model**: Place to define structure, validation, input and out put
 
+I also design package common and middleware for reuse source code in project
+
+## Setup & Run
 ```
-curl -XPOST https://5db83e44177b350014ac77c6.mockapi.io/v1/sms \
-    -d '{"phone_number": <phone_number>, "content": <content>}'
+go run main.
 ```
 
-E.g: you could send a SMS to phone 09812345678 a message "Welcome to TBOX" by calling
+## UnitTEST and Mock
 
+Use **Mockery** [package](https://github.com/vektra/mockery).<br/>
+Generate single mock file (example) :
+```bash
+mockery -name=StoreStorage -case=underscore -dir=./storage -output=./mocks/storage
 ```
-curl -XPOST https://5db83e44177b350014ac77c6.mockapi.io/v1/sms \
-    -d '{"phone_number": "09812345678", "content": "Welcome to TBOX"}'
+- `name`: The name of `interface` to generate.
+- `case`: The name of mock file will be generate.
+- `dir`: The input `inferface` file path.
+- `output`: The output mock file will be generated.
+
+Generate all interfaces with recursive:
+```bash
+mockery -all -recursive -case=underscore
+```
+or use `make` command
+```
+make mock
 ```
 
-## Scope
-Items 1, 2, 3, 4, 8 are required for this task.
+## Run test coverage
+Can use unit test feature of golang cmd for run all test file
+```
+    go test -run ''
+```
 
-Items 5, 6, 7 are optional. 
+or use `make` command
+```
+make coverage
+```
+
