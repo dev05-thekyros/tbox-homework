@@ -50,7 +50,7 @@ func (repo *userRepo) SignUp(ctx context.Context, phoneNumber string) (string, e
 	}
 	// init new OTP if redis value of mobile number not found or redis number is invalid
 	if expiredTime == 0 { // not found OTP
-		if err1 := repo.initOTP(phoneNumber); err1 != nil {
+		if err1 := repo.initOTP(ctx, phoneNumber); err1 != nil {
 			return "", err1
 		}
 		return "", nil
@@ -58,7 +58,7 @@ func (repo *userRepo) SignUp(ctx context.Context, phoneNumber string) (string, e
 
 	// init new OTP, if this last 30 second expired time
 	if (expiredTime - 30) <= time.Now().Unix() {
-		if err1 := repo.initOTP(phoneNumber); err1 != nil {
+		if err1 := repo.initOTP(ctx, phoneNumber); err1 != nil {
 			return "", err1
 		}
 		return "", nil
