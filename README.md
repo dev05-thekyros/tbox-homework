@@ -29,12 +29,11 @@ The good source code should provide
 + Document explain about how to run the code, and how to run the unit test
 
 ## Project Architect
-Using Domain-driven design 
-[Domain-driven design ](https://github.com/vektra/mockery) with 5 layers:
+Using ***Domain-driven design*** with 5 layers, for dev and unit test:
 + **Transport**: place appy input and out return can use for GRPC or Restful (gin)
 + **Handler**: Place call 1 or many repository for solve require from transport layer.
 + **Transport**: All business is centralize in this layer. All unit test should apply here.
-+ **Storage**: only solve problem CRUD. Don't have any logic here. Help solve problem replace another DB with mininum change source code
++ **Storage**: only solve problem CRUD. Don't have any logic here. testHelp solve problem replace another DB with mininum change source code
 + **Model**: Place to define structure, validation, input and out put
 
 I also design package common and middleware for reuse source code in project
@@ -76,3 +75,8 @@ or use `make` command
 make coverage
 ```
 
+***Todo:***
++ Centralize configurations on 1 file.
++ Apply mock test to test repository
+
+ 
